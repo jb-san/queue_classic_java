@@ -29,7 +29,7 @@ module QC
     end
 
     def delete(id)
-      Conn.execute("DELETE FROM #{TABLE_NAME} where id = $1", id)
+      Conn.execute("DELETE FROM #{TABLE_NAME} where id = $1::bigint", id)
     end
 
     def delete_all(q_name=nil)
