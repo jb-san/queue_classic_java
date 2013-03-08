@@ -19,26 +19,31 @@ module QC
   class JdbcAdapterConnection
     CONNECTION_OK = nil
 
+    def initialize(jdbc_conn)
+      @connection = jdbc_conn
+    end
+
     def status
       CONNECTION_OK # don't do any status checking on java
     end
 
     def self.connect(host, port, opts, tty, dbname, user, password)
-      self.new(Java::OrgPostgresql::Driver.new.connect("jdbc:postgresql://#{host}:#{port}/#{dbname}", java.util.Properties.new))
-  #   self.new(java.sql.DriverManager.get_connection("jdbc:postgresql://#{host}:#{port}/#{dbname}")) # todo user pass
-    end
-
-    def initialize(jdbc_conn)
-      @connection = jdbc_conn
+      properties = java.util.Properties.new
+      self.new(Java::OrgPostgresql::Driver.new.connect(
+                "jdbc:postgresql://#{host}:#{port}/#{dbname}", properties))
     end
 
     def exec(statement, params)
-      statement.gsub!(/\$\d/,'?') unless statement =~ /^CREATE/ # will break table names that have $. also breaks setup code.
+      statement.gsub!(/\$\d/,'?') unless statement =~ /^CREATE/
       prepared_statement = @connection.prepare_statement(statement)
-      params = [] unless params
-      params.each_with_index do |p,i|
-        p.is_a?(Fixnum) ? prepared_statement.set_int(i+1, p) : prepared_statement.set_string(i+1, p)
-      end
+
+      params.each_with_index do |value,i|
+        if value.is_a?(Fixnum)
+          prepared_statement.set_int(i+1, value)
+        else
+          prepared_statement.set_string(i+1, value)
+        end
+      end if params
 
       if statement =~ /^SELECT/
         QC::JdbcAdapterResult.new(prepared_statement.execute_query)
