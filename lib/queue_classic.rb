@@ -1,4 +1,10 @@
-require "pg"
+if RUBY_PLATFORM == 'java'
+  require 'jdbc/postgres'
+  require "queue_classic/jdbc_adapter"
+else
+  require "pg"
+end
+
 require "uri"
 
 require "queue_classic/okjson"
