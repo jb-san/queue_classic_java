@@ -1,0 +1,12 @@
+services: postgresql
+language: ruby
+rvm:
+  - 1.9.3
+before_script:
+  - psql -c 'create database queue_classic_test;' -U postgres
+script: 
+  - bundle exec rake
+env:
+  - DATABASE_URL=postgres://postgres@127.0.0.1/queue_classic_test
+notifications:
+  email: false
