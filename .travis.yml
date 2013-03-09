@@ -2,6 +2,8 @@ services: postgresql
 language: ruby
 rvm:
   - 1.9.3
+  - 1.9.2
+  - jruby-19mode
 before_script:
   - psql -c 'create database queue_classic_test;' -U postgres
 script: 
