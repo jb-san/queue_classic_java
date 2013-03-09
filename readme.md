@@ -1,5 +1,7 @@
 # queue_classic
 
+[![Build Status](https://travis-ci.org/bdon/queue_classic.png?branch=master)](https://travis-ci.org/bdon/queue_classic)
+
 v2.1.2
 
 queue_classic provides a simple interface to a PostgreSQL-backed message queue. queue_classic specializes in concurrent locking and minimizing database load while providing a simple, intuitive developer experience. queue_classic assumes that you are already using PostgreSQL in your production environment and that adding another dependency (e.g. redis, beanstalkd, 0mq) is undesirable.
