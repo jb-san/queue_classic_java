@@ -1,5 +1,6 @@
 if RUBY_PLATFORM == 'java'
   require 'jdbc/postgres'
+  Jdbc::Postgres.load_driver(:require) if Jdbc::Postgres.respond_to?(:load_driver)
   require "queue_classic/jdbc_adapter"
 else
   require "pg"
