@@ -17,21 +17,22 @@ module QC
   end
 
   class JdbcAdapterConnection
-    CONNECTION_OK = nil
+    CONNECTION_OK = 1
+    CONNECTION_BAD = 2
 
     def initialize(jdbc_conn)
       @connection = jdbc_conn
     end
 
     def status
-      CONNECTION_OK # don't do any status checking on java
+      @connection.is_valid(0) ? CONNECTION_OK : CONNECTION_BAD
     end
 
     def self.connect(host, port, opts, tty, dbname, user, password)
       properties = java.util.Properties.new
-      properties.put('user', user)
-      properties.put('password', password)
-      self.new(Java::OrgPostgresql::Driver.new.connect(
+      properties.put('user', user) if user
+      properties.put('password', password) if password
+      self.new(java.sql.DriverManager.getConnection(
                 "jdbc:postgresql://#{host}:#{port}/#{dbname}", properties))
     end
 
