@@ -29,6 +29,8 @@ module QC
 
     def self.connect(host, port, opts, tty, dbname, user, password)
       properties = java.util.Properties.new
+      properties.put('user', user)
+      properties.put('password', password)
       self.new(Java::OrgPostgresql::Driver.new.connect(
                 "jdbc:postgresql://#{host}:#{port}/#{dbname}", properties))
     end
